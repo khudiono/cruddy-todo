@@ -44,8 +44,8 @@ exports.getNextUniqueId = (callback) => {
     writeCounter(id, (empty, counterString) => {
       callback(empty, counterString);
       return counterString;
-    })
-  })
+    });
+  });
   // counter = counter + 1;
   // return zeroPaddedNumber(counter);
 };

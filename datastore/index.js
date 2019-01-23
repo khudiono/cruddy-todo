@@ -17,7 +17,7 @@ exports.create = (text, callback) => {
         callback(null, { id, text });
       }
     });
-  })
+  });
 };
 
 exports.readAll = (callback) => {
@@ -29,7 +29,7 @@ exports.readAll = (callback) => {
         var id = text.split('.')[0];
         text = id;
         return {id, text};
-      })
+      });
       callback(null, items);
     }
   });
@@ -43,7 +43,7 @@ exports.readOne = (id, callback) => {
       var text = data;
       callback(null, { id, text });
     }
-  })
+  });
 };
 
 exports.update = (id, text, callback) => {
@@ -72,7 +72,7 @@ exports.delete = (id, callback) => {
     } else {
       callback();
     }
-  })
+  });
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
