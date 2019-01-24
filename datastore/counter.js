@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const sprintf = require('sprintf-js').sprintf;
-
+const Promise = require('bluebird');
 var counter = 0;
 
 // Private helper functions ////////////////////////////////////////////////////
@@ -11,46 +11,47 @@ var counter = 0;
 // Wikipedia entry on Leading Zeros and check out some of code links:
 // https://www.google.com/search?q=what+is+a+zero+padded+number%3F
 
-const zeroPaddedNumber = (num) => {
+const zeroPaddedNumber = num => {
   return sprintf('%05d', num);
 };
 
-const readCounter = (callback) => {
-  fs.readFile(exports.counterFile, (err, fileData) => {
-    if (err) {
-      callback(null, 0);
-    } else {
-      callback(null, Number(fileData));
-    }
-  });
+const readCounter = () => {
+  return new Promise ((resolve, reject) => {
+    fs.readFile(exports.counterFile, (err, fileData) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(Number(fileData));
+      }
+    })
+  })
 };
 
-const writeCounter = (count, callback) => {
-  var counterString = zeroPaddedNumber(count);
-  fs.writeFile(exports.counterFile, counterString, (err) => {
-    if (err) {
-      throw ('error writing counter');
-    } else {
-      callback(null, counterString);
-    }
+const writeCounter = count => {
+  return new Promise((resolve, reject) => {
+    var counterString = zeroPaddedNumber(count);
+    fs.writeFile(exports.counterFile, counterString, err => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(counterString);
+      }
+    });
   });
 };
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = (callback) => {
-  readCounter( (empty, id) => {
-    id++;
-    writeCounter(id, (empty, counterString) => {
-      callback(empty, counterString);
-      return counterString;
+exports.getNextUniqueId = () => {
+  return new Promise((resolve, reject) => {
+    readCounter().then(id => {
+      id++;
+      writeCounter(id).then((counterString) => {
+        resolve(counterString);
+      });
     });
   });
-  // counter = counter + 1;
-  // return zeroPaddedNumber(counter);
 };
-
-
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
