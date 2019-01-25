@@ -118,9 +118,11 @@ describe('todos', () => {
       const todo1text = 'todo 1';
       const todo2text = 'todo 2';
       const expectedTodoList = [{ id: '00001', text: 'todo 1' }, { id: '00002', text: 'todo 2' }];
+
       todos.create(todo1text).then((todo) => {
         todos.create(todo2text).then((todo) => {
           todos.readAll().then((todoList) => {
+
             expect(todoList).to.have.lengthOf(2);
             expect(todoList).to.deep.include.members(expectedTodoList, 'NOTE: Text field should use the Id initially');
             done();

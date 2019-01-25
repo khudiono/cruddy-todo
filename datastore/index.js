@@ -4,6 +4,7 @@ const _ = require('underscore');
 const counter = require('./counter');
 const Promise = require('bluebird');
 
+
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = text => {
@@ -19,6 +20,7 @@ exports.create = text => {
     });
   });
 };
+
 
 exports.readAll = () => {
   var readdir = Promise.promisify(fs.readdir);
