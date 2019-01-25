@@ -26,19 +26,16 @@ exports.readAll = (callback) => {
   var readOne = Promise.promisify(this.readOne);
   var filesArr = [];
   readdir(exports.dataDir)
-  .then((files) => {
-    for (let i = 0; i < files.length; i++) {
-      filesArr.push(readOne(files[i].split('.')[0]));
-    }
-    Promise.all(filesArr).then((items) => {
-      callback(null, items);
-    })
-    .catch(err => {
-      callback(err)
+    .then((files) => {
+      for (let i = 0; i < files.length; i++) {
+        filesArr.push(readOne(files[i].split('.')[0]));
+      }
+      return Promise.all(filesArr).then((items) => {
+        callback(null, items);
+      });
     });
-  })
-
 };
+
 
 exports.readOne = (id, callback) => {
   fs.readFile(path.join(exports.dataDir, id + '.txt'), 'utf8', (err, data) => {
