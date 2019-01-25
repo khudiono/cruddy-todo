@@ -20,29 +20,25 @@ app.use(express.static(path.join(__dirname, './public')));
 
 // Create (Crud) -- collection route
 app.post('/todo', (req, res) => {
-  Todo.create(req.body.todoText, (err, newTodo) => {
-    if (err) {
-      res.sendStatus(400);
-    } else {
-      res.status(201).json(newTodo);
-    }
+  Todo.create(req.body.todoText).then((newTodo) => {
+    res.status(201).json(newTodo);
+  }).catch(err => {
+    res.sendStatus(400);
   });
 });
 
 // Read all (cRud) -- collection route
 app.get('/todo', (req, res) => {
-  Todo.readAll((err, todos) => {
-    if (err) {
-      res.sendStatus(400);
-    } else {
-      res.status(200).json(todos);
-    }
+  Todo.readAll().then((todos) => {
+    res.status(200).json(todos);
+  }).catch(err => {
+    res.sendStatus(400);
   });
 });
 
 // Read one (cRud) -- member route
 app.get('/todo/:id', (req, res) => {
-  Todo.readOne(req.params.id, (err, todo) => {
+  Todo.readOne(req.params.id).then((todo) => {
     if (todo) {
       res.status(200).json(todo);
     } else {
@@ -53,7 +49,7 @@ app.get('/todo/:id', (req, res) => {
 
 // Update (crUd) -- member route
 app.put('/todo/:id', (req, res) => {
-  Todo.update(req.params.id, req.body.todoText, (err, todo) => {
+  Todo.update(req.params.id, req.body.todoText).then((todo) => {
     if (todo) {
       res.status(200).json(todo);
     } else {
@@ -64,13 +60,9 @@ app.put('/todo/:id', (req, res) => {
 
 // Delete (cruD) -- member route
 app.delete('/todo/:id', (req, res) => {
-  Todo.delete(req.params.id, (err) => {
-    if (err) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
-    }
-  });
+  Todo.delete(req.params.id)
+    .then(() => res.sendStatus(204))
+    .catch(err => res.sendStatus(404));
 });
 
 // Start & Initialize Web Server ///////////////////////////////////////////////

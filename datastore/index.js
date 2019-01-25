@@ -17,23 +17,23 @@ exports.create = text => {
         }
       });
     });
-  })
+  });
 };
 
 exports.readAll = () => {
+  var readdir = Promise.promisify(fs.readdir);
+  var readOne = Promise.promisify(this.readOne);
+  var filesArr = [];
   return new Promise((resolve, reject) => {
-    fs.readdir(exports.dataDir, (err, files) => {
-      if (err) {
-        reject(err);
-      } else {
-        var items = _.map(files, text => {
-          var id = text.split('.')[0];
-          text = id;
-          return {id, text};
-        });
-        resolve(items);
-      }
-    });
+    readdir(exports.dataDir)
+      .then((files) => {
+        for (let i = 0; i < files.length; i++) {
+          var id = files[i].split('.')[0];
+          var text = fs.readFileSync(path.join(exports.dataDir, files[i].split('.')[0] + '.txt'), 'utf8');
+          filesArr.push({ id, text });
+        }
+        resolve(filesArr);
+      });
   });
 };
 
@@ -55,9 +55,9 @@ exports.update = (id, text) => {
   return new Promise((resolve, reject) => {
     this.readAll().then(files => {
       for (var file of files) {
-        if(file.id === id) {
+        if (file.id === id) {
           fs.writeFile(path.join(exports.dataDir, id + '.txt'), text, err => {
-            if(err) {
+            if (err) {
               reject(err);
             } else {
               resolve({ id, text });
@@ -65,11 +65,11 @@ exports.update = (id, text) => {
           });
           break;
         } else {
-          reject(new Error(`No item with id: ${id}`))
+          reject(new Error(`No item with id: ${id}`));
         }
       }
-    })
-  })
+    });
+  });
 };
 
 exports.delete = id => {

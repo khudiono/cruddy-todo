@@ -30,8 +30,6 @@ describe('getNextUniqueId', () => {
     counter.getNextUniqueId().then((id) => {
       expect(id).to.exist;
       done();
-    }).catch(err => {
-      expect(err).to.be.null;
     });
   });
 
@@ -112,8 +110,6 @@ describe('todos', () => {
       todos.readAll().then( todoList => {
         expect(todoList.length).to.equal(0);
         done();
-      }).catch(err => {
-        expect(err).to.be.null;
       });
     });
 
@@ -121,7 +117,7 @@ describe('todos', () => {
     it('should return an array with all saved todos', (done) => {
       const todo1text = 'todo 1';
       const todo2text = 'todo 2';
-      const expectedTodoList = [{ id: '00001', text: '00001' }, { id: '00002', text: '00002' }];
+      const expectedTodoList = [{ id: '00001', text: 'todo 1' }, { id: '00002', text: 'todo 2' }];
       todos.create(todo1text).then((todo) => {
         todos.create(todo2text).then((todo) => {
           todos.readAll().then((todoList) => {
@@ -137,10 +133,7 @@ describe('todos', () => {
 
   describe('readOne', () => {
     it('should return an error for non-existant todo', (done) => {
-      todos.readOne('notAnId').then((todo) => {
-        // expect(err).to.exist;
-        // done();
-      }).catch(err => {
+      todos.readOne('notAnId').catch(err => {
         expect(err).to.exist;
         done();
       });
